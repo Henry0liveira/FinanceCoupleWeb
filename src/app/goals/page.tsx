@@ -84,7 +84,21 @@ export default function GoalsPage() {
         </form>
 
         <div className="grid gap-2.5 sm:gap-3 md:gap-4 sm:grid-cols-2">
-          {goals.length ? goals.map((goal) => <GoalCard key={goal.id} goal={goal} />) : (
+          {goals.length ? goals.map((goal) => (
+            <GoalCard
+              key={goal.id}
+              goal={goal}
+              onContribute={(goalId, amount) => {
+                setGoals((prev) =>
+                  prev.map((item) =>
+                    item.id === goalId
+                      ? { ...item, currentAmount: item.currentAmount + amount }
+                      : item
+                  )
+                );
+              }}
+            />
+          )) : (
             <div className="glass p-3 sm:p-4 md:p-5">
               <p className="text-xs sm:text-sm text-slateSoft-500">Adicione metas como Viagem, Reserva de emergência ou Comprar uma casa.</p>
             </div>

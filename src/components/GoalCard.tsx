@@ -1,19 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Goal } from "../lib/types";
 import { contributeToGoal } from "../lib/firestore";
+import { useAuth } from "../lib/auth";
 
-export default function GoalCard({ goal }: { goal: Goal }) {
-  const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
+type GoalCardProps = {
+  goal: Goal;
+  onContribute?: (goalId: string, amount: number) => void;
+};
+
+export default function GoalCard({ goal, onContribute }: GoalCardProps) {
+  const { user } = useAuth();
+  const [displayAmount, setDisplayAmount] = useState(goal.currentAmount);
   const [contribution, setContribution] = useState("");
+  const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    setDisplayAmount(goal.currentAmount);
+  }, [goal.currentAmount]);
+
+  const progress = Math.min((displayAmount / goal.targetAmount) * 100, 100);
 
   const handleContribute = async (event: React.FormEvent) => {
     event.preventDefault();
     const value = Number(contribution);
     if (!Number.isFinite(value) || value <= 0) return;
-    await contributeToGoal(goal.id, value);
+    setPending(true);
+    setDisplayAmount((prev) => prev + value);
+    onContribute?.(goal.id, value);
     setContribution("");
+    try {
+      await contributeToGoal(goal.id, value, {
+        coupleId: user?.coupleId ?? "",
+        userId: user?.id ?? "",
+        ownerId: user?.id ?? undefined,
+        goalName: goal.name
+      });
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -26,7 +52,7 @@ export default function GoalCard({ goal }: { goal: Goal }) {
           </span>
         </div>
         <span className="text-xs font-semibold text-slateSoft-500 flex-shrink-0 whitespace-nowrap">
-          R${goal.currentAmount.toFixed(0)} / R${goal.targetAmount.toFixed(0)}
+          R${displayAmount.toFixed(0)} / R${goal.targetAmount.toFixed(0)}
         </span>
       </div>
       <div className="h-1.5 sm:h-2 w-full rounded-full bg-slateSoft-200">
@@ -48,7 +74,9 @@ export default function GoalCard({ goal }: { goal: Goal }) {
             onChange={(e) => setContribution(e.target.value)}
             placeholder="Valor"
           />
-          <button className="btn-primary" type="submit">Adicionar</button>
+          <button className="btn-primary" type="submit" disabled={pending}>
+            {pending ? "Salvando..." : "Adicionar"}
+          </button>
         </div>
       </form>
     </div>

@@ -10,6 +10,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
+  writeBatch,
   where
 } from "firebase/firestore";
 import { db } from "./firebase";
@@ -48,9 +49,29 @@ export async function addGoal(payload: Omit<Goal, "id">) {
   await addDoc(collection(db, "goals"), payload);
 }
 
-export async function contributeToGoal(goalId: string, amount: number) {
+export async function contributeToGoal(
+  goalId: string,
+  amount: number,
+  meta?: { coupleId: string; userId: string; ownerId?: string; goalName: string; date?: string }
+) {
   if (!Number.isFinite(amount) || amount <= 0) return;
-  await updateDoc(doc(db, "goals", goalId), { currentAmount: increment(amount) });
+  const batch = writeBatch(db);
+  batch.update(doc(db, "goals", goalId), { currentAmount: increment(amount) });
+  if (meta?.coupleId && meta.userId) {
+    const txRef = doc(collection(db, "transactions"));
+    batch.set(txRef, {
+      coupleId: meta.coupleId,
+      description: `Contribuição: ${meta.goalName}`,
+      amount,
+      category: "Metas",
+      type: "expense",
+      createdBy: meta.userId,
+      ownerId: meta.ownerId ?? meta.userId,
+      date: meta.date ?? new Date().toISOString().slice(0, 10),
+      createdAt: serverTimestamp()
+    });
+  }
+  await batch.commit();
 }
 
 export async function fetchCoupleTransactions(coupleId: string) {
