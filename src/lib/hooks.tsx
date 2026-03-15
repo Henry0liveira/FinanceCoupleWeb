@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
-import { collection, limit, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "./firebase";
 import type { Transaction } from "./types";
 
@@ -14,19 +14,24 @@ export function usePartnerNotifications(coupleId: string | null | undefined, use
 
     const q = query(
       collection(db, "transactions"),
-      where("coupleId", "==", coupleId),
-      orderBy("createdAt", "desc"),
-      limit(5)
+      where("coupleId", "==", coupleId)
     );
 
     const unsub = onSnapshot(q, (snapshot) => {
-      const latest = snapshot.docs[0];
+      const items = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })) as Transaction[];
+      items.sort((a, b) => {
+        const aCreated = (a as { createdAt?: { toDate?: () => Date } }).createdAt;
+        const bCreated = (b as { createdAt?: { toDate?: () => Date } }).createdAt;
+        const aTime = aCreated?.toDate ? aCreated.toDate().getTime() : Number(new Date(a.date));
+        const bTime = bCreated?.toDate ? bCreated.toDate().getTime() : Number(new Date(b.date));
+        return bTime - aTime;
+      });
+      const latest = items[0];
       if (!latest) return;
-      const tx = { id: latest.id, ...latest.data() } as Transaction;
-      if (lastSeenId.current && tx.id !== lastSeenId.current && tx.createdBy !== userId) {
-        setNotification(`${tx.description} foi adicionada pelo seu parceiro.`);
+      if (lastSeenId.current && latest.id !== lastSeenId.current && latest.createdBy !== userId) {
+        setNotification(`${latest.description} foi adicionada pelo seu parceiro.`);
       }
-      lastSeenId.current = tx.id;
+      lastSeenId.current = latest.id;
     });
 
     return () => unsub();

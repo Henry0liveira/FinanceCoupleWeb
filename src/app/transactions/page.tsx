@@ -12,7 +12,7 @@ import { useAuth } from "../../lib/auth";
 import { addTransaction, fetchCoupleUsers } from "../../lib/firestore";
 import { formatDatePtBr } from "../../lib/format";
 import type { Transaction } from "../../lib/types";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 const defaultCategories = ["Moradia", "Mercado", "Viagem", "Saúde", "Contas", "Lazer"];
@@ -35,13 +35,19 @@ export default function TransactionsPage() {
     if (!user?.coupleId) return;
     const q = query(
       collection(db, "transactions"),
-      where("coupleId", "==", user.coupleId),
-      orderBy("date", "desc")
+      where("coupleId", "==", user.coupleId)
     );
-    const unsub = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })) as Transaction[];
-      setTransactions(items);
-    });
+    const unsub = onSnapshot(
+      q,
+      (snapshot) => {
+        const items = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })) as Transaction[];
+        items.sort((a, b) => b.date.localeCompare(a.date));
+        setTransactions(items);
+      },
+      (error) => {
+        console.error("Erro ao carregar transações:", error);
+      }
+    );
     return () => unsub();
   }, [user?.coupleId]);
 

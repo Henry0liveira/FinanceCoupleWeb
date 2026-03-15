@@ -49,7 +49,15 @@ export async function addGoal(payload: Omit<Goal, "id">) {
 
 export async function fetchCoupleTransactions(coupleId: string) {
   const snap = await getDocs(query(collection(db, "transactions"), where("coupleId", "==", coupleId)));
-  return snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })) as Transaction[];
+  const items = snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })) as Transaction[];
+  items.sort((a, b) => {
+    const aCreated = (a as { createdAt?: { toDate?: () => Date } }).createdAt;
+    const bCreated = (b as { createdAt?: { toDate?: () => Date } }).createdAt;
+    const aTime = aCreated?.toDate ? aCreated.toDate().getTime() : Number(new Date(a.date));
+    const bTime = bCreated?.toDate ? bCreated.toDate().getTime() : Number(new Date(b.date));
+    return bTime - aTime;
+  });
+  return items;
 }
 
 export async function fetchGoals(coupleId: string) {
