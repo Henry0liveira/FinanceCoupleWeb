@@ -9,19 +9,19 @@ type ActivityFeedProps = {
 
 export default function ActivityFeed({ items, userMap, currentUserId }: ActivityFeedProps) {
   return (
-    <div className="glass p-5">
-      <div className="card-header mb-4">
-        <div className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brandPink/15 text-brandPink">
+    <div className="glass p-3 sm:p-4 md:p-5">
+      <div className="card-header mb-3 sm:mb-4">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brandPink/15 text-brandPink sm:h-8 sm:w-8">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M4 7h6M4 12h10M4 17h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </span>
-          <h3 className="font-display text-lg font-semibold text-navy-900">Linha do tempo</h3>
+          <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Linha do tempo</h3>
         </div>
         <span className="text-xs font-semibold text-slateSoft-500">Atualizações recentes</span>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
         {items.map((item) => {
           const owner = item.createdBy;
           const displayName = owner
@@ -41,9 +41,9 @@ export default function ActivityFeed({ items, userMap, currentUserId }: Activity
             : null;
 
           return (
-            <div key={item.id} className="flex items-start gap-3">
+            <div key={item.id} className="flex items-start gap-2 sm:gap-3">
               <div
-                className={`mt-1 h-2 w-2 rounded-full ${
+                className={`mt-1 h-1.5 w-1.5 rounded-full flex-shrink-0 sm:h-2 sm:w-2 ${
                   item.accent === "income"
                     ? "bg-income"
                     : item.accent === "expense"

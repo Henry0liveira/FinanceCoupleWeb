@@ -18,11 +18,11 @@
   onPersonChange?: (value: string) => void;
 }) {
   return (
-    <div className="card flex flex-col gap-4 p-4 lg:flex-row lg:items-center">
+    <div className="card flex flex-col gap-2 p-3 sm:gap-3 sm:p-4 md:p-5 lg:flex-row lg:items-center lg:gap-4">
       <div className="flex-1">
         <label className="label">Categoria</label>
         <select
-          className="input mt-2"
+          className="input mt-1.5 sm:mt-2"
           value={selectedCategory}
           onChange={(e) => onCategoryChange(e.target.value)}
         >
@@ -38,7 +38,7 @@
         <div className="flex-1">
           <label className="label">Pessoa</label>
           <select
-            className="input mt-2"
+            className="input mt-1.5 sm:mt-2"
             value={selectedPerson}
             onChange={(e) => onPersonChange(e.target.value)}
           >
@@ -51,12 +51,12 @@
           </select>
         </div>
       ) : null}
-      <div className="flex flex-1 gap-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:gap-3 md:gap-4 lg:flex-1">
         <div className="flex-1">
           <label className="label">De</label>
           <input
             type="date"
-            className="input mt-2"
+            className="input mt-1.5 sm:mt-2"
             value={dateRange.from}
             onChange={(e) => onDateChange({ ...dateRange, from: e.target.value })}
           />
@@ -65,7 +65,7 @@
           <label className="label">Até</label>
           <input
             type="date"
-            className="input mt-2"
+            className="input mt-1.5 sm:mt-2"
             value={dateRange.to}
             onChange={(e) => onDateChange({ ...dateRange, to: e.target.value })}
           />

@@ -49,14 +49,14 @@ export default function OwnerCharts({ transactions, userMap, currentUserId }: Ow
   );
 
   return (
-    <div className="glass p-5">
-      <div className="card-header mb-4">
-        <div>
-          <h3 className="font-display text-lg font-semibold text-navy-900">Receitas e despesas</h3>
+    <div className="glass p-3 sm:p-4 md:p-5">
+      <div className="card-header mb-3 sm:mb-4">
+        <div className="min-w-0">
+          <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Receitas e despesas</h3>
           <p className="text-xs text-slateSoft-500">Por pessoa e compartilhadas</p>
         </div>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {owners.map((owner) => {
           const total = owner.income + owner.expense;
           const totalWidth = (total / maxTotal) * 100;
@@ -64,20 +64,20 @@ export default function OwnerCharts({ transactions, userMap, currentUserId }: Ow
           const expenseWidth = total > 0 ? (owner.expense / total) * 100 : 0;
 
           return (
-            <div key={owner.id} className="space-y-2">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-sm font-semibold text-navy-900">{owner.name}</p>
-                <div className="flex items-center gap-3 text-xs text-slateSoft-500">
+            <div key={owner.id} className="space-y-1.5 sm:space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-1 sm:gap-2">
+                <p className="text-sm font-semibold text-navy-900 truncate">{owner.name}</p>
+                <div className="flex items-center gap-2 sm:gap-3 text-xs text-slateSoft-500 flex-shrink-0 whitespace-nowrap">
                   <span className="text-income">R${owner.income.toFixed(2)}</span>
                   <span className="text-expense">R${owner.expense.toFixed(2)}</span>
                 </div>
               </div>
-              <div className="h-3 w-full rounded-full bg-slateSoft-200">
+              <div className="h-2 sm:h-3 w-full rounded-full bg-slateSoft-200">
                 <div
-                  className="flex h-3 rounded-full overflow-hidden"
+                  className="flex h-2 sm:h-3 rounded-full overflow-hidden"
                   style={{ width: `${totalWidth}%` }}
                 >
-                  <div className="h-3 bg-income" style={{ width: `${incomeWidth}%` }} />
+                  <div className="h-2 sm:h-3 bg-income" style={{ width: `${incomeWidth}%` }} />
                   <div className="h-3 bg-expense" style={{ width: `${expenseWidth}%` }} />
                 </div>
               </div>

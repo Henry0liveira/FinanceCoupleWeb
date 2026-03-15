@@ -6,6 +6,7 @@ import PageHeader from "../../components/PageHeader";
 import GradientHeader from "../../components/GradientHeader";
 import OwnerCharts from "../../components/OwnerCharts";
 import CategoryExpenseChart from "../../components/CategoryExpenseChart";
+import IncomeExpenseChart from "../../components/IncomeExpenseChart";
 import FilterBar from "../../components/FilterBar";
 import { useAuth } from "../../lib/auth";
 import { addTransaction, fetchCoupleUsers } from "../../lib/firestore";
@@ -89,7 +90,7 @@ export default function TransactionsPage() {
 
   return (
     <AppShell>
-      <div className="space-y-4">
+      <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
         <GradientHeader
           eyebrow="Movimentações do casal"
           title="Transações"
@@ -98,37 +99,37 @@ export default function TransactionsPage() {
         <PageHeader title="Gerenciar atividade" subtitle="Adicionar e filtrar" />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-        <form className="glass space-y-4 p-6" onSubmit={handleSubmit}>
-          <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brandPink/15 text-brandPink">
+      <div className="grid gap-3 sm:gap-4 md:gap-5 lg:gap-6 lg:grid-cols-[1fr_1.2fr]">
+        <form className="glass space-y-2.5 sm:space-y-3 md:space-y-4 p-3 sm:p-4 md:p-5" onSubmit={handleSubmit}>
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brandPink/15 text-brandPink sm:h-9 sm:w-9">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </span>
             <div>
-              <p className="text-sm font-semibold text-navy-900">Nova transação</p>
-              <p className="text-xs text-slateSoft-500">Registre receitas ou despesas.</p>
+              <p className="text-xs sm:text-sm font-semibold text-navy-900">Nova transação</p>
+              <p className="text-[11px] sm:text-xs text-slateSoft-500">Registre receitas ou despesas.</p>
             </div>
           </div>
           <div>
             <label className="label">Descrição</label>
-            <input className="input mt-2" value={description} onChange={(e) => setDescription(e.target.value)} required />
+            <input className="input mt-1.5 sm:mt-2" value={description} onChange={(e) => setDescription(e.target.value)} required />
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-2.5 sm:gap-3 md:grid-cols-2">
             <div>
               <label className="label">Valor</label>
-              <input className="input mt-2" type="number" min="0" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+              <input className="input mt-1.5 sm:mt-2" type="number" min="0" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} required />
             </div>
             <div>
               <label className="label">Data</label>
-              <input className="input mt-2" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+              <input className="input mt-1.5 sm:mt-2" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
             </div>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-2.5 sm:gap-3 md:grid-cols-2">
             <div>
               <label className="label">Categoria</label>
-              <select className="input mt-2" value={category} onChange={(e) => setCategory(e.target.value)}>
+              <select className="input mt-1.5 sm:mt-2" value={category} onChange={(e) => setCategory(e.target.value)}>
                 {defaultCategories.map((item) => (
                   <option key={item} value={item}>{item}</option>
                 ))}
@@ -136,7 +137,7 @@ export default function TransactionsPage() {
             </div>
             <div>
               <label className="label">Tipo</label>
-              <select className="input mt-2" value={type} onChange={(e) => setType(e.target.value as "income" | "expense") }>
+              <select className="input mt-1.5 sm:mt-2" value={type} onChange={(e) => setType(e.target.value as "income" | "expense") }>
                 <option value="expense">Despesa</option>
                 <option value="income">Receita</option>
               </select>
@@ -144,7 +145,7 @@ export default function TransactionsPage() {
           </div>
           <div>
             <label className="label">Responsável</label>
-            <select className="input mt-2" value={ownerId} onChange={(e) => setOwnerId(e.target.value)}>
+            <select className="input mt-1.5 sm:mt-2" value={ownerId} onChange={(e) => setOwnerId(e.target.value)}>
               {members.map((person) => (
                 <option key={person.id} value={person.id}>
                   {person.id === user?.id ? "Você" : person.name}
@@ -153,18 +154,11 @@ export default function TransactionsPage() {
               <option value="shared">Compartilhada</option>
             </select>
           </div>
-          <button className="btn-primary w-full" type="submit">Adicionar transação</button>
+          <button className="btn-primary w-full mt-1 sm:mt-2" type="submit">Adicionar transação</button>
         </form>
 
-        <div className="space-y-4">
-          <OwnerCharts
-            transactions={transactions}
-            userMap={members.reduce<Record<string, string>>((acc, member) => {
-              acc[member.id] = member.name;
-              return acc;
-            }, {})}
-            currentUserId={user?.id}
-          />
+        <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
+          <IncomeExpenseChart transactions={transactions} />
           <CategoryExpenseChart transactions={transactions} />
           <FilterBar
             categories={defaultCategories}
@@ -176,19 +170,19 @@ export default function TransactionsPage() {
             selectedPerson={filterPerson}
             onPersonChange={setFilterPerson}
           />
-          <div className="glass p-5">
-            <div className="card-header mb-4">
-              <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brandBlue/15 text-brandBlue">
+          <div className="glass p-3 sm:p-4 md:p-5">
+            <div className="card-header mb-3 sm:mb-4">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brandBlue/15 text-brandBlue sm:h-8 sm:w-8">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
                 </span>
-                <h3 className="font-display text-lg font-semibold text-navy-900">Todas as transações</h3>
+                <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Todas as transações</h3>
               </div>
-              <span className="text-xs text-slateSoft-500">{filtered.length} itens</span>
+              <span className="text-xs font-semibold text-slateSoft-500">{filtered.length} itens</span>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-2.5 md:space-y-3">
               {filtered.map((tx) => {
                 const owner = tx.ownerId ?? tx.createdBy;
                 const name = owner === "shared"
@@ -204,18 +198,18 @@ export default function TransactionsPage() {
                   .join("") || "C";
 
                 return (
-                  <div key={tx.id} className="flex flex-col gap-3 rounded-xl border border-white/60 bg-white/70 px-4 py-3 shadow-card backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-navy-900">{tx.description}</p>
-                      <p className="text-xs text-slateSoft-500">{tx.category} · {formatDatePtBr(tx.date)}</p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brandBlue/15 text-[10px] font-semibold text-brandBlue">
+                  <div key={tx.id} className="flex flex-col gap-2 rounded-xl border border-white/60 bg-white/70 px-3 py-2.5 shadow-card backdrop-blur-md sm:px-4 sm:py-3 sm:flex-row sm:items-center sm:justify-between md:gap-3 md:px-5 md:py-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-navy-900 truncate">{tx.description}</p>
+                      <p className="text-xs text-slateSoft-500 truncate">{tx.category} · {formatDatePtBr(tx.date)}</p>
+                      <div className="mt-1.5 sm:mt-2 flex items-center gap-2">
+                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brandBlue/15 text-[9px] sm:text-[10px] font-semibold text-brandBlue">
                           {initials}
                         </span>
-                        <p className="text-xs font-semibold text-slateSoft-500">Por: {name}</p>
+                        <p className="text-xs font-semibold text-slateSoft-500 truncate">Por: {name}</p>
                       </div>
                     </div>
-                    <p className={`text-sm font-semibold ${tx.type === "income" ? "text-income" : "text-expense"}`}>
+                    <p className={`text-sm font-semibold flex-shrink-0 text-right ${tx.type === "income" ? "text-income" : "text-expense"}`}>
                       {tx.type === "income" ? "+" : "-"}R${tx.amount.toFixed(2)}
                     </p>
                   </div>

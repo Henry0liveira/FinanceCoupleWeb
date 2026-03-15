@@ -78,16 +78,16 @@ export default function DashboardCharts({ transactions, userMap, currentUserId }
   });
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-      <div className="glass p-5">
-        <div className="card-header mb-4">
-          <div>
-            <h3 className="font-display text-lg font-semibold text-navy-900">Tendência mensal</h3>
+    <div className="grid gap-3 sm:gap-4 md:gap-5 lg:gap-6 lg:grid-cols-[1.2fr_1fr]">
+      <div className="glass p-3 sm:p-4 md:p-5">
+        <div className="card-header mb-3 sm:mb-4">
+          <div className="min-w-0">
+            <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Tendência mensal</h3>
             <p className="text-xs text-slateSoft-500">Últimos 6 meses</p>
           </div>
         </div>
-        <div className="space-y-4">
-          <div className="h-40 w-full rounded-2xl bg-white/70 p-4">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="h-32 sm:h-40 w-full rounded-2xl bg-white/70 p-2 sm:p-3 md:p-4">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
               <polyline
                 fill="none"
@@ -98,88 +98,88 @@ export default function DashboardCharts({ transactions, userMap, currentUserId }
               />
             </svg>
           </div>
-          <div className="grid grid-cols-2 gap-3 text-xs text-slateSoft-500 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs text-slateSoft-500 sm:grid-cols-3 md:gap-4">
             {monthSeries.map(([month, values]) => (
-              <div key={month} className="rounded-xl bg-white/70 px-3 py-2">
-                <p className="font-semibold text-navy-900">{month}</p>
-                <p>Receitas: R${values.income.toFixed(0)}</p>
-                <p>Despesas: R${values.expense.toFixed(0)}</p>
+              <div key={month} className="rounded-xl bg-white/70 px-2 py-1.5 sm:px-3 sm:py-2 text-xs">
+                <p className="font-semibold text-navy-900 truncate">{month}</p>
+                <p className="truncate">Rec: R${values.income.toFixed(0)}</p>
+                <p className="truncate">Des: R${values.expense.toFixed(0)}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="glass p-5">
-          <div className="card-header mb-4">
-            <div>
-              <h3 className="font-display text-lg font-semibold text-navy-900">Receitas x Despesas</h3>
+      <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
+        <div className="glass p-3 sm:p-4 md:p-5">
+          <div className="card-header mb-3 sm:mb-4">
+            <div className="min-w-0">
+              <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Receitas x Despesas</h3>
               <p className="text-xs text-slateSoft-500">Comparativo geral</p>
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-income">Receitas</span>
-              <span className="text-slateSoft-500">R${totalIncome.toFixed(2)}</span>
+              <span className="text-slateSoft-500 text-[11px] sm:text-xs">R${totalIncome.toFixed(0)}</span>
             </div>
-            <div className="h-2 w-full rounded-full bg-slateSoft-200">
+            <div className="h-1.5 sm:h-2 w-full rounded-full bg-slateSoft-200">
               <div
-                className="h-2 rounded-full bg-income"
+                className="h-1.5 sm:h-2 rounded-full bg-income transition-all"
                 style={{ width: `${(totalIncome / Math.max(1, totalIncome + totalExpense)) * 100}%` }}
               />
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-expense">Despesas</span>
-              <span className="text-slateSoft-500">R${totalExpense.toFixed(2)}</span>
+              <span className="text-slateSoft-500 text-[11px] sm:text-xs">R${totalExpense.toFixed(0)}</span>
             </div>
-            <div className="h-2 w-full rounded-full bg-slateSoft-200">
+            <div className="h-1.5 sm:h-2 w-full rounded-full bg-slateSoft-200">
               <div
-                className="h-2 rounded-full bg-expense"
+                className="h-1.5 sm:h-2 rounded-full bg-expense transition-all"
                 style={{ width: `${(totalExpense / Math.max(1, totalIncome + totalExpense)) * 100}%` }}
               />
             </div>
           </div>
         </div>
 
-        <div className="glass p-5">
-          <div className="card-header mb-4">
-            <div>
-              <h3 className="font-display text-lg font-semibold text-navy-900">Despesas por categoria</h3>
+        <div className="glass p-3 sm:p-4 md:p-5">
+          <div className="card-header mb-3 sm:mb-4">
+            <div className="min-w-0">
+              <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Despesas por categoria</h3>
               <p className="text-xs text-slateSoft-500">Top categorias</p>
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {categories.length ? (
               categories.map(([category, value]) => (
-                <div key={category} className="space-y-2">
+                <div key={category} className="space-y-1 sm:space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-navy-900">{category}</span>
-                    <span className="text-slateSoft-500">R${value.toFixed(2)}</span>
+                    <span className="font-semibold text-navy-900 truncate">{category}</span>
+                    <span className="text-slateSoft-500 text-[11px] sm:text-xs flex-shrink-0 ml-1">R${value.toFixed(0)}</span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-slateSoft-200">
+                  <div className="h-1.5 sm:h-2 w-full rounded-full bg-slateSoft-200">
                     <div
-                      className="h-2 rounded-full bg-brandPink"
+                      className="h-1.5 sm:h-2 rounded-full bg-brandPink transition-all"
                       style={{ width: `${(value / Math.max(1, categories[0]?.[1] || 1)) * 100}%` }}
                     />
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-sm text-slateSoft-500">Sem despesas cadastradas ainda.</p>
+              <p className="text-xs sm:text-sm text-slateSoft-500">Sem despesas cadastradas ainda.</p>
             )}
           </div>
         </div>
       </div>
 
-      <div className="glass p-5 lg:col-span-2">
-        <div className="card-header mb-4">
-          <div>
-            <h3 className="font-display text-lg font-semibold text-navy-900">Saldo acumulado</h3>
+      <div className="glass p-3 sm:p-4 md:p-5 lg:col-span-2">
+        <div className="card-header mb-3 sm:mb-4">
+          <div className="min-w-0">
+            <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Saldo acumulado</h3>
             <p className="text-xs text-slateSoft-500">Evolução mês a mês</p>
           </div>
         </div>
-        <div className="h-40 w-full rounded-2xl bg-white/70 p-4">
+        <div className="h-32 sm:h-40 w-full rounded-2xl bg-white/70 p-2 sm:p-3 md:p-4">
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
             <polyline
               fill="none"
@@ -193,10 +193,10 @@ export default function DashboardCharts({ transactions, userMap, currentUserId }
         </div>
       </div>
 
-      <div className="glass p-5 lg:col-span-2">
-        <div className="card-header mb-4">
-          <div>
-            <h3 className="font-display text-lg font-semibold text-navy-900">Participação por responsável</h3>
+      <div className="glass p-3 sm:p-4 md:p-5 lg:col-span-2">
+        <div className="card-header mb-3 sm:mb-4">
+          <div className="min-w-0">
+            <h3 className="font-display text-base sm:text-lg font-semibold text-navy-900">Participação por responsável</h3>
             <p className="text-xs text-slateSoft-500">Quem mais movimentou</p>
           </div>
         </div>

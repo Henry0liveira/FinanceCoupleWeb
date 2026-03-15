@@ -17,18 +17,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen gradient-bg">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-6 py-16 lg:items-start">
-        <div className="glass max-w-2xl p-10 text-center lg:text-left">
-          <p className="label">FinanceCouple</p>
-          <h1 className="mt-3 font-display text-4xl font-semibold text-navy-900 sm:text-5xl">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-2 py-8 sm:gap-8 sm:px-4 sm:py-12 md:gap-10 md:px-6 md:py-16 lg:items-start">
+        <div className="glass max-w-2xl p-4 sm:p-6 md:p-8 lg:p-10 text-center lg:text-left">
+          <p className="label text-xs">FinanceCouple</p>
+          <h1 className="mt-2 sm:mt-3 font-display text-3xl sm:text-4xl md:text-5xl font-semibold text-navy-900">
             Clareza financeira para casais modernos.
           </h1>
-          <p className="mt-4 text-sm text-slateSoft-500 sm:text-base">
+          <p className="mt-3 sm:mt-4 text-xs sm:text-sm md:text-base text-slateSoft-500">
             Acompanhe receitas, despesas e metas juntos sem perder o contexto individual.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/login" className="btn-primary">Entrar</Link>
-            <Link href="/register" className="btn-secondary">Criar conta</Link>
+          <div className="mt-4 sm:mt-5 md:mt-6 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
+            <Link href="/login" className="btn-primary text-sm">Entrar</Link>
+            <Link href="/register" className="btn-secondary text-sm">Criar conta</Link>
           </div>
         </div>
       </div>

@@ -70,7 +70,7 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <div className="space-y-4">
+      <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
         <GradientHeader
           eyebrow="Visão do casal"
           title="Painel"
@@ -82,27 +82,27 @@ export default function DashboardPage() {
       </div>
 
       {!user?.coupleId ? (
-        <div className="card p-6">
-          <p className="text-sm text-slateSoft-500">Você ainda não está vinculado a um casal.</p>
-          <Link href="/settings" className="btn-primary mt-4">Criar ou entrar em um casal</Link>
+        <div className="card p-3 sm:p-4 md:p-5 md:p-6">
+          <p className="text-xs sm:text-sm text-slateSoft-500">Você ainda não está vinculado a um casal.</p>
+          <Link href="/settings" className="btn-primary mt-3 sm:mt-4">Criar ou entrar em um casal</Link>
         </div>
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-2 sm:gap-3 md:gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <StatCard label="Saldo total" value={`R$${totals.balance.toFixed(2)}`} accent="accent" />
             <StatCard label="Receitas totais" value={`R$${totals.income.toFixed(2)}`} accent="income" />
             <StatCard label="Despesas totais" value={`R$${totals.expenses.toFixed(2)}`} accent="expense" />
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+          <div className="grid gap-3 sm:gap-4 md:gap-5 lg:gap-6 lg:grid-cols-[1.4fr_1fr]">
             <TransactionList transactions={transactions.slice(0, 6)} userMap={userMap} currentUserId={user?.id} />
-            <div className="space-y-6">
+            <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
               {goals.length ? (
                 goals.slice(0, 2).map((goal) => <GoalCard key={goal.id} goal={goal} />)
               ) : (
-                <div className="glass p-5">
-                  <p className="text-sm text-slateSoft-500">Crie metas compartilhadas para acompanhar o progresso.</p>
-                  <Link href="/goals" className="btn-secondary mt-4">Adicionar meta</Link>
+                <div className="glass p-3 sm:p-4 md:p-5">
+                  <p className="text-xs sm:text-sm text-slateSoft-500">Crie metas compartilhadas para acompanhar o progresso.</p>
+                  <Link href="/goals" className="btn-secondary mt-3 sm:mt-4">Adicionar meta</Link>
                 </div>
               )}
             </div>
