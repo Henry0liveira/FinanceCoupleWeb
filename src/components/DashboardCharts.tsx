@@ -61,9 +61,14 @@ export default function DashboardCharts({ transactions, userMap, currentUserId }
   const categories = groupByCategory(transactions);
   const totalIncome = transactions.filter((tx) => tx.type === "income").reduce((sum, tx) => sum + tx.amount, 0);
   const totalExpense = transactions.filter((tx) => tx.type === "expense").reduce((sum, tx) => sum + tx.amount, 0);
+  const totalCategoryExpense = categories.reduce((sum, [, value]) => sum + value, 0);
   const maxMonth = Math.max(1, ...monthSeries.map(([, values]) => Math.max(values.income, values.expense)));
   const maxBalance = Math.max(1, ...balanceSeries.map((item) => Math.abs(item.balance)));
   const maxOwner = Math.max(1, ...ownerSeries.map(([, value]) => value));
+  const pieRadius = 48;
+  const pieCircumference = 2 * Math.PI * pieRadius;
+  const pieColors = ["text-brandPink", "text-brandPurple", "text-brandBlue", "text-income", "text-expense", "text-navy-900"];
+  let pieOffset = 0;
 
   const linePoints = monthSeries.map(([, values], idx) => {
     const x = (idx / Math.max(1, monthSeries.length - 1)) * 100;
@@ -149,22 +154,68 @@ export default function DashboardCharts({ transactions, userMap, currentUserId }
               <p className="text-xs text-slateSoft-500">Top categorias</p>
             </div>
           </div>
-          <div className="space-y-2 sm:space-y-3">
+          <div className="space-y-3 sm:space-y-4">
             {categories.length ? (
-              categories.map(([category, value]) => (
-                <div key={category} className="space-y-1 sm:space-y-1.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-navy-900 truncate">{category}</span>
-                    <span className="text-slateSoft-500 text-[11px] sm:text-xs flex-shrink-0 ml-1">R${value.toFixed(0)}</span>
-                  </div>
-                  <div className="h-1.5 sm:h-2 w-full rounded-full bg-slateSoft-200">
-                    <div
-                      className="h-1.5 sm:h-2 rounded-full bg-brandPink transition-all"
-                      style={{ width: `${(value / Math.max(1, categories[0]?.[1] || 1)) * 100}%` }}
-                    />
+              <>
+                <div className="flex flex-col items-center gap-3 sm:gap-4">
+                  <div className="relative h-36 w-36 sm:h-40 sm:w-40">
+                    <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r={pieRadius}
+                        className="text-slateSoft-200"
+                        stroke="currentColor"
+                        strokeWidth="14"
+                        fill="none"
+                      />
+                      {categories.map(([category, value], index) => {
+                        const slice = totalCategoryExpense > 0 ? (value / totalCategoryExpense) * pieCircumference : 0;
+                        const colorClass = pieColors[index % pieColors.length];
+                        const dash = `${slice} ${pieCircumference - slice}`;
+                        const element = (
+                          <circle
+                            key={category}
+                            cx="60"
+                            cy="60"
+                            r={pieRadius}
+                            className={colorClass}
+                            stroke="currentColor"
+                            strokeWidth="14"
+                            fill="none"
+                            strokeDasharray={dash}
+                            strokeDashoffset={-pieOffset}
+                            strokeLinecap="round"
+                          />
+                        );
+                        pieOffset += slice;
+                        return element;
+                      })}
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <p className="text-[11px] sm:text-xs text-slateSoft-500">Total</p>
+                      <p className="text-base sm:text-lg font-bold text-navy-900">R${totalCategoryExpense.toFixed(0)}</p>
+                    </div>
                   </div>
                 </div>
-              ))
+                <div className="space-y-2 sm:space-y-2.5">
+                  {categories.map(([category, value], index) => {
+                    const percent = totalCategoryExpense > 0 ? (value / totalCategoryExpense) * 100 : 0;
+                    const colorClass = pieColors[index % pieColors.length];
+                    return (
+                      <div key={category} className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className={`h-2.5 w-2.5 rounded-full ${colorClass}`} />
+                          <span className="font-semibold text-navy-900 truncate">{category}</span>
+                        </div>
+                        <span className="text-slateSoft-500 text-[11px] sm:text-xs flex-shrink-0 ml-2">
+                          R${value.toFixed(0)} · {percent.toFixed(0)}%
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             ) : (
               <p className="text-xs sm:text-sm text-slateSoft-500">Sem despesas cadastradas ainda.</p>
             )}
