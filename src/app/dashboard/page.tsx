@@ -9,6 +9,7 @@ import TransactionList from "../../components/TransactionList";
 import GoalCard from "../../components/GoalCard";
 import ActivityFeed from "../../components/ActivityFeed";
 import OwnerCharts from "../../components/OwnerCharts";
+import DashboardCharts from "../../components/DashboardCharts";
 import NotificationToast from "../../components/NotificationToast";
 import { useAuth } from "../../lib/auth";
 import { fetchCoupleTransactions, fetchGoals, fetchCoupleUsers } from "../../lib/firestore";
@@ -106,6 +107,8 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
+
+          <DashboardCharts transactions={transactions} userMap={userMap} currentUserId={user?.id} />
 
           <OwnerCharts transactions={transactions} userMap={userMap} currentUserId={user?.id} />
 

@@ -5,6 +5,7 @@ import AppShell from "../../components/AppShell";
 import PageHeader from "../../components/PageHeader";
 import GradientHeader from "../../components/GradientHeader";
 import OwnerCharts from "../../components/OwnerCharts";
+import CategoryExpenseChart from "../../components/CategoryExpenseChart";
 import FilterBar from "../../components/FilterBar";
 import { useAuth } from "../../lib/auth";
 import { addTransaction, fetchCoupleUsers } from "../../lib/firestore";
@@ -164,6 +165,7 @@ export default function TransactionsPage() {
             }, {})}
             currentUserId={user?.id}
           />
+          <CategoryExpenseChart transactions={transactions} />
           <FilterBar
             categories={defaultCategories}
             selectedCategory={filterCategory}
