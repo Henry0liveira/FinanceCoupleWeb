@@ -63,18 +63,28 @@ export default function TransactionsPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!user?.coupleId || !user.id) return;
-    await addTransaction({
-      coupleId: user.coupleId,
-      description,
-      amount: Number(amount),
-      category,
-      type,
-      createdBy: user.id,
-      ownerId,
-      date
-    });
-    setDescription("");
-    setAmount("");
+    
+    try {
+      await addTransaction({
+        coupleId: user.coupleId,
+        description,
+        amount: Number(amount),
+        category,
+        type,
+        createdBy: user.id,
+        ownerId,
+        date
+      });
+      // Resetar todos os campos após envio bem-sucedido
+      setDescription("");
+      setAmount("");
+      setCategory(defaultCategories[0]);
+      setType("expense");
+      setOwnerId(user.id);
+      setDate(new Date().toISOString().slice(0, 10));
+    } catch (error) {
+      console.error("Erro ao adicionar transação:", error);
+    }
   };
 
   const filtered = useMemo(() => {
