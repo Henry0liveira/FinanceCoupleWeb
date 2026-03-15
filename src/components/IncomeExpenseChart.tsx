@@ -17,10 +17,29 @@ export default function IncomeExpenseChart({ transactions }: IncomeExpenseChartP
   const incomePercentage = total > 0 ? (totalIncome / total) * 100 : 0;
   const expensePercentage = total > 0 ? (totalExpense / total) * 100 : 0;
 
-  // Calcular pontos do gráfico de pizza
-  const radius = 45;
-  const circumference = 2 * Math.PI * radius;
-  const incomeStrokeDashOffset = circumference - (incomePercentage / 100) * circumference;
+  // Calcular ângulos para o gráfico de pizza
+  const incomeAngle = (incomePercentage / 100) * 360;
+  const startAngle = -90; // Começar no topo
+  const endAngle = startAngle + incomeAngle;
+
+  // Função para converter ângulo em coordenadas (x, y) em um círculo
+  const polarToCartesian = (angle: number, radius: number) => {
+    const radians = (angle * Math.PI) / 180;
+    return {
+      x: 60 + radius * Math.cos(radians),
+      y: 60 + radius * Math.sin(radians)
+    };
+  };
+
+  const startPoint = polarToCartesian(startAngle, 45);
+  const endPoint = polarToCartesian(endAngle, 45);
+  const largeArc = incomeAngle > 180 ? 1 : 0;
+
+  // Verificar se deve usar comando de arco grande
+  const pathData =
+    incomeAngle === 360
+      ? `M ${startPoint.x} ${startPoint.y} A 45 45 0 1 1 ${endPoint.x} ${endPoint.y} A 45 45 0 1 1 ${startPoint.x} ${startPoint.y}`
+      : `M 60 60 L ${startPoint.x} ${startPoint.y} A 45 45 0 ${largeArc} 1 ${endPoint.x} ${endPoint.y} Z`;
 
   return (
     <div className="glass p-3 sm:p-4 md:p-5">
@@ -35,28 +54,39 @@ export default function IncomeExpenseChart({ transactions }: IncomeExpenseChartP
         <div className="flex-shrink-0 w-32 h-32 sm:w-40 sm:h-40">
           <svg viewBox="0 0 120 120" className="w-full h-full">
             {/* Círculo de fundo */}
-            <circle cx="60" cy="60" r={radius} fill="none" stroke="currentColor" strokeWidth="12" className="text-slateSoft-200" />
+            <circle cx="60" cy="60" r="45" fill="none" stroke="#EAE6F6" strokeWidth="10" />
             
-            {/* Receitas (verde) */}
-            <circle
-              cx="60"
-              cy="60"
-              r={radius}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="12"
-              className="text-income"
-              strokeDasharray={circumference}
-              strokeDashoffset={incomeStrokeDashOffset}
-              strokeLinecap="round"
-              transform="rotate(-90 60 60)"
-            />
+            {/* Receitas (verde) - segmento principal */}
+            <path d={pathData} fill="#23C483" stroke="none" />
+
+            {/* Despesas (vermelho) - complemento */}
+            {total > 0 && (
+              <path
+                d={`M 60 60 L ${endPoint.x} ${endPoint.y} A 45 45 0 ${largeArc === 1 ? 0 : 1} 1 ${startPoint.x} ${startPoint.y} Z`}
+                fill="#EF4444"
+                stroke="none"
+              />
+            )}
 
             {/* Texto no centro */}
-            <text x="60" y="55" textAnchor="middle" className="text-xs sm:text-sm font-semibold fill-navy-900">
+            <text
+              x="60"
+              y="58"
+              textAnchor="middle"
+              fontSize="14"
+              fontWeight="600"
+              fill="#0F172A"
+            >
               {total > 0 ? total.toFixed(0) : "0"}
             </text>
-            <text x="60" y="70" textAnchor="middle" className="text-[10px] sm:text-xs fill-slateSoft-500">
+            <text
+              x="60"
+              y="72"
+              textAnchor="middle"
+              fontSize="11"
+              fontWeight="500"
+              fill="#8B86A3"
+            >
               Total
             </text>
           </svg>
