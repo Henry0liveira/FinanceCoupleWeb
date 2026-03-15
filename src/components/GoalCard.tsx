@@ -1,7 +1,21 @@
-﻿import type { Goal } from "../lib/types";
+"use client";
+
+import { useState } from "react";
+import type { Goal } from "../lib/types";
+import { contributeToGoal } from "../lib/firestore";
 
 export default function GoalCard({ goal }: { goal: Goal }) {
   const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
+  const [contribution, setContribution] = useState("");
+
+  const handleContribute = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const value = Number(contribution);
+    if (!Number.isFinite(value) || value <= 0) return;
+    await contributeToGoal(goal.id, value);
+    setContribution("");
+  };
+
   return (
     <div className="glass p-3 sm:p-4 md:p-5">
       <div className="card-header mb-2 sm:mb-3">
@@ -22,6 +36,21 @@ export default function GoalCard({ goal }: { goal: Goal }) {
         />
       </div>
       <p className="mt-2 sm:mt-3 text-xs font-semibold text-slateSoft-500">{progress.toFixed(0)}% funded</p>
+      <form className="mt-3 sm:mt-4 space-y-2" onSubmit={handleContribute}>
+        <label className="label">Contribuir com a meta</label>
+        <div className="flex gap-2">
+          <input
+            className="input"
+            type="number"
+            min="0"
+            step="0.01"
+            value={contribution}
+            onChange={(e) => setContribution(e.target.value)}
+            placeholder="Valor"
+          />
+          <button className="btn-primary" type="submit">Adicionar</button>
+        </div>
+      </form>
     </div>
   );
 }

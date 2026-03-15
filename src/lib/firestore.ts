@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  increment,
   query,
   serverTimestamp,
   updateDoc,
@@ -45,6 +46,11 @@ export async function addTransaction(payload: Omit<Transaction, "id" | "createdA
 
 export async function addGoal(payload: Omit<Goal, "id">) {
   await addDoc(collection(db, "goals"), payload);
+}
+
+export async function contributeToGoal(goalId: string, amount: number) {
+  if (!Number.isFinite(amount) || amount <= 0) return;
+  await updateDoc(doc(db, "goals", goalId), { currentAmount: increment(amount) });
 }
 
 export async function fetchCoupleTransactions(coupleId: string) {
